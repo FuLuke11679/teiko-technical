@@ -72,6 +72,18 @@ def _render_data_overview(db_path: str) -> None:
 		mime="text/csv",
 	)
 
+	st.markdown("### Distribution of population frequencies")
+	fig = px.histogram(
+		freq_df,
+		x="percentage",
+		facet_col="population",
+		marginal="rug",
+		nbins=30,
+		labels={"percentage": "Frequency (%)"},
+	)
+	fig.update_layout(height=400, margin=dict(l=10, r=10, t=30, b=10))
+	st.plotly_chart(fig, use_container_width=True)
+
 
 def _render_responder_vs_nonresponder(db_path: str) -> None:
 
@@ -81,6 +93,8 @@ def _render_responder_vs_nonresponder(db_path: str) -> None:
 		st.info("No responder/non-responder data available for melanoma patients treated with miraclib.")
 		return
 
+	population_order = ["b_cell", "cd4_t_cell", "cd8_t_cell", "nk_cell", "monocyte"]
+
 	st.markdown("### Boxplots by population")
 	fig = px.box(
 		freq_df,
@@ -88,7 +102,7 @@ def _render_responder_vs_nonresponder(db_path: str) -> None:
 		y="percentage",
 		color="response",
 		facet_col="population",
-		category_orders={"response": ["no", "yes"]},
+		category_orders={"population": population_order, "response": ["no", "yes"]},
 		labels={"response": "Response", "percentage": "Frequency (%)"},
 	)
 	fig.update_layout(height=400, margin=dict(l=10, r=10, t=30, b=10))
@@ -97,6 +111,15 @@ def _render_responder_vs_nonresponder(db_path: str) -> None:
 	st.markdown("### Statistics summary")
 	if not stats_df.empty:
 		stats_display = stats_df.copy()
+
+		population_order = ["b_cell", "cd4_t_cell", "cd8_t_cell", "nk_cell", "monocyte"]
+		stats_display["population"] = pd.Categorical(
+			stats_display["population"],
+			categories=population_order,
+			ordered=True,
+		)
+		stats_display = stats_display.sort_values("population")
+
 		stats_display["mean_yes"] = stats_display["mean_yes"].round(2)
 		stats_display["mean_no"] = stats_display["mean_no"].round(2)
 		stats_display["p_value"] = stats_display["p_value"].map(lambda v: f"{v:.3g}" if pd.notna(v) else "NA")
