@@ -72,13 +72,16 @@ def _render_data_overview(db_path: str) -> None:
 		mime="text/csv",
 	)
 
-	st.markdown("### Distribution of population frequencies")
+	population_order = ["b_cell", "cd4_t_cell", "cd8_t_cell", "nk_cell", "monocyte"]
+
+	st.markdown("### Distribution of Population Frequencies")
 	fig = px.histogram(
 		freq_df,
 		x="percentage",
 		facet_col="population",
 		marginal="rug",
 		nbins=30,
+		category_orders={"population": population_order},
 		labels={"percentage": "Frequency (%)"},
 	)
 	fig.update_layout(height=400, margin=dict(l=10, r=10, t=30, b=10))
@@ -95,7 +98,7 @@ def _render_responder_vs_nonresponder(db_path: str) -> None:
 
 	population_order = ["b_cell", "cd4_t_cell", "cd8_t_cell", "nk_cell", "monocyte"]
 
-	st.markdown("### Boxplots by population")
+	st.markdown("### Boxplots By Population")
 	fig = px.box(
 		freq_df,
 		x="response",
@@ -108,7 +111,7 @@ def _render_responder_vs_nonresponder(db_path: str) -> None:
 	fig.update_layout(height=400, margin=dict(l=10, r=10, t=30, b=10))
 	st.plotly_chart(fig, use_container_width=True)
 
-	st.markdown("### Statistics summary")
+	st.markdown("### Statistics Summary (T Test)")
 	if not stats_df.empty:
 		stats_display = stats_df.copy()
 
@@ -134,7 +137,7 @@ def _render_subset_analysis(db_path: str) -> None:
 	st.subheader("Baseline Subset Analysis (Melanoma, Miraclib, PBMC, Day 0)")
 	samples_per_project, subjects_by_response, subjects_by_gender, avg_bcell = baseline_subset_cached(db_path)
 
-	st.markdown("### Number of samples per project")
+	st.markdown("### Number of Samples per Project")
 	if samples_per_project.empty:
 		st.info("No baseline samples found for the specified cohort.")
 	else:
@@ -142,20 +145,20 @@ def _render_subset_analysis(db_path: str) -> None:
 
 	col1, col2 = st.columns(2)
 	with col1:
-		st.markdown("### Subjects: responders vs non-responders")
+		st.markdown("### Subjects: Responders vs Non-Responders")
 		if subjects_by_response.empty:
 			st.info("No responder/non-responder information available.")
 		else:
 			st.dataframe(subjects_by_response)
 
 	with col2:
-		st.markdown("### Subjects: males vs females")
+		st.markdown("### Subjects: Males vs Females")
 		if subjects_by_gender.empty:
 			st.info("No gender information available.")
 		else:
 			st.dataframe(subjects_by_gender)
 
-	st.markdown("### Average B cell count for male responders at baseline")
+	st.markdown("### Average B cell Count for Male Responders at Baseline")
 	if avg_bcell is None:
 		st.info("No baseline B cell counts found for male responders.")
 	else:
