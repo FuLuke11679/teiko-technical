@@ -162,7 +162,7 @@ def _render_subset_analysis(db_path: str) -> None:
 	if avg_bcell is None:
 		st.info("No baseline B cell counts found for male responders.")
 	else:
-		st.metric("Average B cell count", f"{avg_bcell:.2g}")
+		st.metric("Average B cell count", f"{avg_bcell:,.2f}")
 
 
 def main() -> None:

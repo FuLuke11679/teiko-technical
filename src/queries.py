@@ -119,7 +119,7 @@ def get_baseline_subset_metrics(conn) -> tuple[pd.DataFrame, pd.DataFrame, pd.Da
 		params=params,
 	)
 
-	male_filters = base_filters | {"gender": "M", "response": "yes"}
+	male_filters = {"indication": "melanoma", "gender": "M", "response": "yes", "time_from_treatment_start": 0}
 	male_where, male_params = _build_filters(male_filters)
 
 	bcell_df = pd.read_sql_query(
