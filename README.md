@@ -73,11 +73,11 @@ The dashboard reads exclusively from the SQLite database (not directly from CSV)
 - **Responder vs Non-Responder**
 	- Restricts to melanoma patients treated with miraclib (PBMC samples)
 	- Shows boxplots of relative frequencies (%) per population, split by response (yes/no)
-	- Displays a statistics table with group means, p-values, FDR-adjusted p-values, and a significance flag (α = 0.05)
+	- Displays a statistics table with group means, p-values, FDR-adjusted p-values, and a significance level (α = 0.05)
 - **Subset Analysis**
 	- Filters to melanoma, PBMC, miraclib, baseline (time_from_treatment_start = 0)
 	- Shows number of samples per project
 	- Counts subjects by response (yes/no) and gender (M/F)
-	- Reports the average B cell count for male responders at baseline (raw counts, two significant figures)
+	- Reports the average B cell count for male responders at baseline
 
 Expensive queries and computations are cached with `@st.cache_data` to keep the dashboard responsive.
